@@ -1,43 +1,22 @@
 const express = require('express');
 const router = express.Router();
 
+// do nothing
 router.get('/', (req, res) => {    
-    console.debug('shop root');
-
-    res.send('A valid countryCode or shopId is required');
+    res.send('A valid countryCode is required');
 });
 
-router.get('/shop', (req, res) => {    
-    console.debug('shop root');
-
+// do nothing
+router.get('/shop', (req, res) => {   
     res.send('A valid shopId is required');
 });
 
-//  [GET] /api/v1/offers/shop/{shopID} 
-router.get('/shop/:shopID', (req, res) => {    
-    console.log('shopID', req.params.shopID);
+const offerController = require("../controllers/offerController");
 
-    const offers = [
-        { id: 1, name: 'OFFER_1' },
-        { id: 2, name: 'OFFER_2' },
-        { id: 3, name: 'OFFER_3' },
-    ];
-
-    res.json(offers);
-})
+//  [GET] /api/v1/offers/shop/{shopID}
+router.get('/shop/:shopID', offerController.offer_list_by_shop_id)
 
 //  [GET] /api/v1/offers/{countryCode}
-router.get('/:countryCode', (req, res) => {
-
-    console.log('countryCode', req.params.countryCode);
-
-    const offers = [
-        { id: 1, name: 'OFFER_1' },
-        { id: 2, name: 'OFFER_2' },
-        { id: 3, name: 'OFFER_3' },
-    ];
-
-    res.json(offers);
-});
+router.get('/:countryCode', offerController.offer_list_by_country_code);
 
 module.exports = router;
