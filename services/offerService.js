@@ -1,11 +1,21 @@
 const shopRepository = require('../repositories/shopRepository');
 const offerRepository = require('../repositories/offerRepository');
 
+/**
+ * Retrieve all offers related to a specific shopId
+ * @param {number} shopId 
+ * @returns {Promise<Array>}
+ */
 async function retrieveByShopId(shopId) {
     var offers = await offerRepository.retrieveOffers();
     return offers.filter(offer => offer.shop_id == shopId).sort((offer1, offer2) => offer1.price - offer2.price);
 }
 
+/**
+ * Retrieve all offers of a country
+ * @param {string} countryCode 
+ * @returns {Promise<Array>}
+ */
 async function retrieveByCountryCode(countryCode) {
     var filteredOffers = [];
 

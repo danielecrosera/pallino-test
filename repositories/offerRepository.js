@@ -5,9 +5,13 @@ const jsonUrl = process.env.URL_OFFERS_JSON;
  * @async
  * @returns {Promise<Array>}
  */
-async function retrieveOffers() {
-    const responseJson = await fetch(jsonUrl);
-    const offersJson = await responseJson.json();
+async function retrieveOffers() {        
+    var responseJson = await fetch(jsonUrl);
+    if (!responseJson.ok){
+        throw new Error('An error has occured reading offers.json: ' + responseJson.status);
+    }
+
+    var offersJson = await responseJson.json();
     console.debug('offers json read');
 
     return offersJson;

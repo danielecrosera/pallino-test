@@ -6,12 +6,24 @@ module.exports.offer_list_by_shop_id = asyncHandler(async (req, res, next) => {
     const shopId = parseShopId(req.params.shopID); // return false if not a positive integer
 
     if(shopId !== false) {
-        var offers = await retrieveByShopId(shopId);
-        res.json(offers);            
+        try {
+            var offers = await retrieveByShopId(shopId);
+            res.json({
+                total: offers.length,
+                offers: offers
+            });            
+        }
+        catch(e) {
+            console.error(e);
+            res.status(500);
+            res.json({
+                status: 500,
+                error: e.message
+            });
+        }
     }
     else {
         console.error('Invalid shopID "' + req.params.shopID + '"');
-
         res.status(400);
         res.json({
             status: 400,
@@ -25,13 +37,24 @@ module.exports.offer_list_by_country_code = asyncHandler(async (req, res, next) 
     const countryCode = req.params.countryCode;
     
     if(validCountryCode(countryCode)){
-        var offers = await retrieveByCountryCode(countryCode)
-
-        res.json(offers);
+        try {
+            var offers = await retrieveByCountryCode(countryCode);
+            res.json({
+                total: offers.length,
+                offers: offers
+            });
+        }
+        catch(e) {
+            console.error(e);
+            res.status(500);
+            res.json({
+                status: 500,
+                error: e.message
+            });
+        }
     }
     else {
         console.error('Invalid countryCode "' + countryCode + '"');
-
         res.status(400);
         res.json({
             status: 400,
