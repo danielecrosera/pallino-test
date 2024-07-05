@@ -1,9 +1,14 @@
 const jsonUrl = process.env.URL_OFFERS_JSON;
 
+/**
+ * Retrieve the offers from external URL. Return a JSON representation of a list of offers
+ * @async
+ * @returns {Promise<Array>}
+ */
 async function retrieveOffers() {
     const responseJson = await fetch(jsonUrl);
     const offersJson = await responseJson.json();
-    console.log('offers json read');
+    console.debug('offers json read');
 
     return offersJson;
 }

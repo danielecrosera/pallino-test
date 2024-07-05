@@ -1,14 +1,22 @@
 const express = require('express');
 const router = express.Router();
 
-// do nothing
+// send 400
 router.get('/', (req, res) => {    
-    res.send('A valid countryCode is required');
+    res.status(400);
+    res.json({
+        status: 400,
+        error: "A countryCode param is required"
+    });
 });
 
-// do nothing
-router.get('/shop', (req, res) => {   
-    res.send('A valid shopId is required');
+// send 400
+router.get('/shop', (req, res) => {    
+    res.status(400);
+    res.json({
+        status: 400,
+        error: "A shopId param is required"
+    });
 });
 
 const offerController = require("../controllers/offerController");

@@ -2,15 +2,38 @@ const shopRepository = require('../repositories/shopRepository');
 const offerRepository = require('../repositories/offerRepository');
 
 async function retrieveByShopId(shopId) {
-    // var shops = await shopRepository.retrieveShops();
-    // var shop = shops.filter(s => s.id == shopId);
-
     var offers = await offerRepository.retrieveOffers();
-    return offers.filter(o => o.shop_id == shopId);
+    return offers.filter(offer => offer.shop_id == shopId).sort((offer1, offer2) => offer1.price - offer2.price);
 }
 
 async function retrieveByCountryCode(countryCode) {
-    return [];
+    var filteredOffers = [];
+
+    var allShops = await shopRepository.retrieveShops();
+    var shopsByCountry = [];
+    var shopIds = [];
+    
+    allShops.forEach(s => {
+        if(s.country.toLowerCase() == countryCode.toLowerCase()){
+            shopsByCountry[s.id] = s;
+            shopIds.push(s.id);
+        }
+    });
+
+    if(shopsByCountry.length > 0) {
+        var allOffers = await offerRepository.retrieveOffers();
+        filteredOffers = allOffers.reduce(function(filtered, offer) {
+                    if (shopIds.includes(offer.shop_id)) {
+                    offer.shop = shopsByCountry[offer.shop_id];
+                    filtered.push(offer);
+                    }
+                    return filtered;
+                }, 
+            [])
+            .sort((offer1, offer2) => offer1.price - offer2.price);
+    }
+
+    return filteredOffers;
 }
 
 module.exports = {retrieveByShopId, retrieveByCountryCode}

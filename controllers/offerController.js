@@ -3,23 +3,62 @@ const {retrieveByShopId, retrieveByCountryCode} = require('../services/offerServ
 
 // Offer list by shopID
 module.exports.offer_list_by_shop_id = asyncHandler(async (req, res, next) => {
-    console.log('shopID', req.params.shopID);
+    const shopId = parseShopId(req.params.shopID); // return false if not a positive integer
 
-    var offers = await retrieveByShopId();
+    if(shopId !== false) {
+        var offers = await retrieveByShopId(shopId);
+        res.json(offers);            
+    }
+    else {
+        console.error('Invalid shopID "' + req.params.shopID + '"');
 
-    res.json(offers);
-
+        res.status(400);
+        res.json({
+            status: 400,
+            error: "shopID must be a positive integer"
+        });
+    }
 });
 
 // Offer list by countryCode
 module.exports.offer_list_by_country_code = asyncHandler(async (req, res, next) => {
-    console.log('countryCode', req.params.countryCode);
+    const countryCode = req.params.countryCode;
+    
+    if(validCountryCode(countryCode)){
+        var offers = await retrieveByCountryCode(countryCode)
 
-    const offers = [
-        { id: 1, name: 'OFFER_1' },
-        { id: 2, name: 'OFFER_2' },
-        { id: 3, name: 'OFFER_3' },
-    ];
+        res.json(offers);
+    }
+    else {
+        console.error('Invalid countryCode "' + countryCode + '"');
 
-    res.json(offers);
+        res.status(400);
+        res.json({
+            status: 400,
+            error: "countryCode must be a string of 2 letters"
+        });
+    }
 });
+
+/**
+ * If shopId is valid (positive integer), get number from string. False otherwise 
+ * @param {string} shopId 
+ * @returns {number|boolean}
+ */
+function parseShopId(shopId) {
+    if( /^([1-9]\d*)$/.test(shopId)) {
+        return parseInt(shopId);
+    }
+    else {
+        return false;
+    }
+}
+
+/**
+ * Check if countryCode is a valid string
+ * @param {string} countryCode 
+ * @returns {boolean}
+ */
+function validCountryCode(countryCode) {
+    return /^([a-zA-Z]){2}$/i.test(countryCode);
+}

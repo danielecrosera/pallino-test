@@ -4,7 +4,7 @@ dotenv.config();
 const express = require('express');
 const app = express();
 
-app.get('/', (req, res) => res.send('Ciao!'));
+app.get('/', (req, res) => res.send(''));
 
 const offersRouter = require('./routes/offers');
 app.use('/api/v1/offers', offersRouter);
